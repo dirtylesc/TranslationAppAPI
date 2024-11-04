@@ -5,3 +5,5 @@ httpx
 sqlalchemy
 databases
 pytest
+speechrecognition
+pydub
