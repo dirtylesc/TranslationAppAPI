@@ -1,8 +1,15 @@
+import sys
+
+sys.path.append('src')
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from speech_to_text import getTextFromAudio
 
 app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 @app.get("/upload-audio/")
 async def upload_audio(file: UploadFile = File(...)):
