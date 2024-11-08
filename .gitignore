@@ -2,3 +2,5 @@ venv/
 /.venv
 __pycache__/main.cpython-312.pyc
 src/__pycache__/speech_to_text.cpython-312.pyc
+/src/routers/__pycache__
+/src/routers/translations/__pycache__
