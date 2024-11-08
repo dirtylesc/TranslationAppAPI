@@ -1,25 +1,16 @@
 import sys
 
-sys.path.append('src')
-from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import JSONResponse
-from speech_to_text import getTextFromAudio
+from fastapi import FastAPI
+import uvicorn
 
-app = FastAPI()
+from src.routers import api_router
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+def create_app() -> FastAPI:
+    app = FastAPI()
+    app.include_router(api_router.router)
+    return app
 
-@app.get("/upload-audio/")
-async def upload_audio(file: UploadFile = File(...)):
-  audio_content = await file.read()
-  
-  data = getTextFromAudio(audio_content)
-    
-  return JSONResponse(content=data['content'], status_code=data['status_code'])
-    
+app = create_app()
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
