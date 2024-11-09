@@ -1,5 +1,4 @@
-import sys
-
+import base64
 from fastapi import File, UploadFile, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 import speech_recognition as sr
@@ -13,9 +12,17 @@ router = APIRouter(
 )
 
 @router.post("/upload-audio", tags=tags)
-async def transcribe(file: UploadFile = File(...), language: str = "en"):
-    audio_data = await file.read()
-    audio_file = BytesIO(audio_data)
+async def transcribe(request: dict, language: str = "en"):
+    try:
+        audio_base64 = request["audio"]
+    except KeyError:
+        raise HTTPException(status_code=400, detail="Field 'audio' is required")
+    try:
+        # Giải mã Base64 thành dữ liệu nhị phân
+        audio_data = base64.b64decode(audio_base64)
+        audio_file = BytesIO(audio_data)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Lỗi giải mã Base64: {str(e)}")
     try:
         audio = AudioSegment.from_file(audio_file)
         wav_audio = BytesIO()
