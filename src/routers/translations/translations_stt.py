@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 @router.post("/upload-audio", tags=tags)
-async def transcribe(request: dict, language: str = "en"):
+async def transcribe(request: dict):
     try:
         audio_base64 = request["audio"]
     except KeyError:
@@ -34,11 +34,10 @@ async def transcribe(request: dict, language: str = "en"):
 
     recognizer = sr.Recognizer()
     
-
     try:
         with sr.AudioFile(audio_file) as source:
             audio = recognizer.record(source)
-        text = recognizer.recognize_google(audio, language=language)
+        text = recognizer.recognize_google(audio, language=request["language"])
         return JSONResponse(content={"transcription": text})
     except sr.UnknownValueError:
         raise HTTPException(status_code=422, detail="Không thể nhận diện giọng nói từ tệp âm thanh")
