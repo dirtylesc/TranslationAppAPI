@@ -14,17 +14,16 @@ router = APIRouter(
 
 @router.post("/upload-audio", tags=tags)
 async def transcribe(file: UploadFile = File(...), language: str = "en"):
-    if not file.filename.endswith(".wav"):
-        audio_data = await file.read()
-        audio_file = BytesIO(audio_data)
-        try:
-            audio = AudioSegment.from_file(audio_file)
-            wav_audio = BytesIO()
-            audio.export(wav_audio, format="wav")
-            wav_audio.seek(0)
-            audio_file = wav_audio
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Lỗi chuyển đổi âm thanh: {str(e)}")
+    audio_data = await file.read()
+    audio_file = BytesIO(audio_data)
+    try:
+        audio = AudioSegment.from_file(audio_file)
+        wav_audio = BytesIO()
+        audio.export(wav_audio, format="wav")
+        wav_audio.seek(0)
+        audio_file = wav_audio
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Lỗi chuyển đổi âm thanh: {str(e)}")
 
     recognizer = sr.Recognizer()
     
