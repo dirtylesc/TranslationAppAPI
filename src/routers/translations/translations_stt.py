@@ -4,6 +4,7 @@ from fastapi import File, UploadFile, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 import speech_recognition as sr
 from io import BytesIO
+from pydub import AudioSegment
 
 tags = ["translations"]
 router = APIRouter(
@@ -14,11 +15,19 @@ router = APIRouter(
 @router.post("/upload-audio", tags=tags)
 async def transcribe(file: UploadFile = File(...), language: str = "en"):
     if not file.filename.endswith(".wav"):
-        raise HTTPException(status_code=400, detail="File must be a .wav file")
+        audio_data = await file.read()
+        audio_file = BytesIO(audio_data)
+        try:
+            audio = AudioSegment.from_file(audio_file)
+            wav_audio = BytesIO()
+            audio.export(wav_audio, format="wav")
+            wav_audio.seek(0)
+            audio_file = wav_audio
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Lỗi chuyển đổi âm thanh: {str(e)}")
 
     recognizer = sr.Recognizer()
-    audio_data = await file.read()
-    audio_file = BytesIO(audio_data)
+    
 
     try:
         with sr.AudioFile(audio_file) as source:
