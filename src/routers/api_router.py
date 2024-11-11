@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from src.routers.translations import translations_stt
+from src.routers.translations import translations_orc
 
 prefix = "/api/v1"
 
@@ -13,3 +14,4 @@ router = APIRouter(
 )
 
 router.include_router(translations_stt.router)
+router.include_router(translations_orc.router)
