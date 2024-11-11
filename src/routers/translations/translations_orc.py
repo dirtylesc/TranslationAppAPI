@@ -9,7 +9,7 @@ router = APIRouter(
                500: {"description": "Server error"}},
 )
 
-@router.post("/orc", tags=tags)
+@router.post("/img2text", tags=tags)
 async def image2text(file: UploadFile = File(...)):
     try:
         image_bytes = await file.read()
