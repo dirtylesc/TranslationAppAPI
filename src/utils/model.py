@@ -18,6 +18,10 @@ class OCRModel(OnnxInferenceModel):
 
         full_text = ""
         for word_image, _ in word_images:
+            if word_image.size == 0:
+                continue
+            if word_image.shape[0] == 0 or word_image.shape[1] == 0:
+                continue
             resized_word = cv2.resize(word_image, (128, 32), interpolation=cv2.INTER_LANCZOS4)
             resized_word = cv2.cvtColor(resized_word, cv2.COLOR_GRAY2BGR) if len(
                 resized_word.shape) == 2 else resized_word
