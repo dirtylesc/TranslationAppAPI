@@ -1,7 +1,6 @@
 from fastapi import FastAPI, APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from mltu.configs import BaseModelConfigs
-
 from src.utils.model import OCRModel
 
 try:
@@ -10,14 +9,13 @@ try:
 except Exception as e:
     raise Exception(f"Error loading model or configs: {e}")
 
-app = FastAPI()
 tags = ["translations"]
 router = APIRouter(
     responses={404: {"description": "Not found"},
                500: {"description": "Server error"}},
 )
 
-@router.post("/ocr")
+@router.post("/ocr",tags=tags)
 async def predict_text(file: UploadFile = File(...)):
     try:
         contents = await file.read()

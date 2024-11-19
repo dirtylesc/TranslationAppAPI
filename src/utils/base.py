@@ -26,7 +26,7 @@ def extract_word_images(binary: np.ndarray) -> list:
     word_images = []
 
     for i in range(len(results['text'])):
-        if int(results['conf'][i]) > 0:
+        if int(results['conf'][i]) > 30:
             x, y, w, h = (results['left'][i], results['top'][i], results['width'][i], results['height'][i])
             word_image = binary[y-5:y+h+5, x-5:x+w+5]
             word_images.append((word_image, (x, y, w, h)))
